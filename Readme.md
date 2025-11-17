@@ -78,16 +78,9 @@ python manage.py runserver
 - **Payment Integration:**
   - Cryptocurrency payment (wallet integration)
 
-## Project Status
 
 
-The initial version is complete and includes:
-- Frontend: React
-- Backend: Django
-- Authentication: JWT-based login system
-- E-Commerce Flow: Product catalog, cart functionality, and basic
-checkout
-- Payment Support: Bank transfers only (crypto support in progress)
+
 
 
 

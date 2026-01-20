@@ -53,6 +53,9 @@ http://66.235.168.136:3000/api/errorMessage
 
 Message sent to target:
 
+Sender profile:
+https://www.linkedin.com/in/arturo-molleda/
+
 ```
 Hi Jendrik,
 

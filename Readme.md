@@ -1,86 +1,78 @@
-# Online Store with Cryptocurrency Integration
+# Repository Security Notice
 
-Welcome to the OnlineStore repository! This project is an e-commerce web application built using React and Django that allows users to browse products, make purchases, and pay using cryptocurrency.
+This repository contained a multi-stage, malicious execution chain embedded in
+the frontend configuration. The stage-0 trigger has been commented out so the
+repo is safe to check out, but the remaining files are kept for analysis.
 
-## Project Description
+## Technical attack chain
 
-OnlineStore is designed to provide a seamless online shopping experience with the added benefit of accepting cryptocurrency payments. This project leverages modern web development technologies to create a robust and scalable online store platform.
+### Stage 0: Next.js config execution (trigger)
+**File:** `frontend/next.config.js`
 
-### Features
+An appended one-liner executed on every Next.js startup or build:
 
-- **User Authentication:** Secure user registration and login functionality using JWT.
-- **Product Catalog:** Display a variety of products with detailed information and search functionality.
-- **Shopping Cart:** Add, update, and remove products in the shopping cart.
-- **Checkout Process:** Streamlined checkout process for a smooth user experience.
-- **Cryptocurrency Payments:** Integration with popular cryptocurrency payment gateways for secure transactions.
-- **Order Management:** Track and manage user orders and payment status.
-- **Admin Dashboard:** Admin panel for managing products, orders, and users.
-- **Responsive Design:** Optimized for both desktop and mobile devices.
+- Reads a local file: `frontend/public/assets/js/jquery.min.js`
+- Executes its contents with `eval`
 
-## Getting started
+This is dangerous because `next.config.js` runs in the Node.js process during
+`next dev`, `next build`, CI, or any tooling that loads the config.
 
+The malicious block is now commented out.
 
+### Stage 1: Local loader disguised as jQuery
+**File:** `frontend/public/assets/js/jquery.min.js`
 
-This command will start the backend server, and it will listen for incoming requests.
+This file is not jQuery. It:
 
-####  Install Frontend Dependencies
+- Decodes a base64 URL
+- Fetches remote JavaScript via `node-fetch`
+- Executes the response with `eval`
 
-Open a new terminal window , and run the following command to install the frontend dependencies:
-
-```bash
-cd frontend
+Decoded URL:
+```
+http://api-web3-auth.vercel.app/api/auth
 ```
 
-```bash
-npm install
+### Stage 2: Remote payload (downloaded for analysis)
+**File (captured):** `analysis/api-auth.js`
+
+Behavior:
+
+- Collects host data (hostname, MACs, OS info)
+- Sends it to a command-and-control (C2) server
+- If the server replies with `status: "error"`, it executes arbitrary code
+  using `new Function('require', message)` which enables full Node.js RCE
+
+The C2 endpoint seen in the payload:
+```
+http://66.235.168.136:3000/api/errorMessage
 ```
 
-####  Run the Frontend Server
+## Why this is severe
 
-After installing the frontend dependencies, run the following command in the same terminal to start the frontend server:
+- The attack triggers automatically during normal development workflows.
+- Remote code execution can run arbitrary Node.js code, read files, or access
+  environment secrets.
+- Beaconing every 5 seconds creates a persistent control channel.
 
-```bash
-npm run dev
-```
+## Indicators of Compromise (IOCs)
 
-####  Install Backend Dependencies
-```bash
-cd api.royaljapan
-```
+**Network:**
+- `http://api-web3-auth.vercel.app/api/auth`
+- `http://66.235.168.136:3000/api/errorMessage`
 
-```bash
-pip install -r requirements.txt
-```
+**Malicious files:**
+- `frontend/next.config.js` (stage-0 trigger, now commented)
+- `frontend/public/assets/js/jquery.min.js` (stage-1 loader)
+- `analysis/api-auth.js` (captured stage-2 payload)
 
-####  Run the Backend Server
+## Safe checkout guidance
 
-After installing the backend dependencies, run the following command in the same terminal to start the backend server:
+- Do not run `next dev` or `next build` until the stage-0 code is removed.
+- Verify `frontend/next.config.js` contains only the legitimate config export.
+- Remove or quarantine the fake `jquery.min.js` if not needed.
 
-```bash
-python manage.py runserver
-```
-####  Run the Frontend Server
-
-
-## Technologies Used
-
-- **Frontend:**
-  - React
-  - tailwindcss
-
-- **Backend:**
-  - Python
-  - Django
-
-- **Database:**
-  - MySQL
-
-- **Payment Integration:**
-  - Cryptocurrency payment (wallet integration)
-
-
-
-
-
+If you need the original project instructions, refer to the git history or
+recreate them in a separate clean README.
 
 

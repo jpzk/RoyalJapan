@@ -3,6 +3,7 @@
 This repository contained a multi-stage, malicious execution chain embedded in
 the frontend configuration. The stage-0 trigger has been commented out so the
 repo is safe to check out, but the remaining files are kept for analysis.
+This attack occurred on 20 January 2026.
 
 ## Technical attack chain
 

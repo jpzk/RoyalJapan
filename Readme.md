@@ -1,5 +1,8 @@
 # Repository Security Notice
 
+I forked the malicious repository and analyzed it using the Cursor Background
+Agents sandbox and GPT-5.2 Codex.
+
 This repository contained a multi-stage, malicious execution chain embedded in
 the frontend configuration. The stage-0 trigger has been commented out so the
 repo is safe to check out, but the remaining files are kept for analysis.

@@ -48,6 +48,31 @@ The C2 endpoint seen in the payload:
 http://66.235.168.136:3000/api/errorMessage
 ```
 
+### Stage -2: Social engineering via LinkedIn
+
+Message sent to target:
+
+```
+Hi Jendrik,
+
+I'd like to arrange the meeting with our manager
+https://calendly.com/japanese-royal/interview
+
+Please schedule the call on your available time
+Our manager will join the call to know more about your project experience and also discuss our project details
+
+Best regards
+Arturo
+```
+
+### Stage -1: Social engineering via Google Meet
+
+- Video on for the first ~1 minute, then video off; mic-only conversation.
+- Asks about credentials and why the job is a fit, then shares a link to the repo.
+- Requests screen sharing; request denied due to multiple red flags.
+- Says he does not understand the concern and claims he is on mobile, so cannot
+  screen share, and suggests rescheduling.
+
 ## Why this is severe
 
 - The attack triggers automatically during normal development workflows.

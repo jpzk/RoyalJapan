@@ -1,7 +1,7 @@
-# Repository Security Notice
+# Using Cursor Cloud Agents for Malware analysis
 
 I forked the malicious repository and analyzed it using the Cursor Background
-Agents sandbox and GPT-5.2 Codex.
+Agents sandbox and GPT-5.2 Codex. For the social engineering part, see [LinkedIn Post](https://www.linkedin.com/feed/update/urn:li:activity:7419343455384014848/). 
 
 This repository contained a multi-stage, malicious execution chain embedded in
 the frontend configuration. The stage-0 trigger has been commented out so the
